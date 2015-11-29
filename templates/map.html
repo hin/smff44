@@ -1,0 +1,40 @@
+<!DOCTYPE html>
+<html>
+  <head>
+    <script src="https://code.jquery.com/jquery-1.11.3.min.js"></script>
+    <style type="text/css">
+      html, body { height: 100%; margin: 0; padding: 0; }
+      #map { height: 100%; }
+    </style>
+  </head>
+  <body>
+    <div id="map"></div>
+    <script type="text/javascript">
+
+var points = [
+{% for area in areas %}
+  {id: '{{ area.id }}', name: '{{ area.name }}', position: { lat: {{ area.position[0] }}, lng: {{ area.position[1] }} }, descr: '{{ area.descr }}'},
+{% endfor %}
+];
+
+var map;
+function initMap() {
+  map = new google.maps.Map(document.getElementById('map'), {center: {lat: 63, lng: 17},zoom: 5});
+
+  $.each(points, function (index, point) {
+    var marker = new google.maps.Marker({position: point['position'], map: map, title: point['id']});
+    marker.addListener('click', function() {
+      var infowindow = new google.maps.InfoWindow({
+        content: '<h3>'+point['id']+' - '+point['name']+'</h3>'
+      });
+      infowindow.open(map, marker);
+    });
+  });
+}
+
+    </script>
+    <script async defer
+      src="https://maps.googleapis.com/maps/api/js?key=AIzaSyBSebjgs1wmR1zlFVdbWg5pa0Yl9yNMjfE&callback=initMap">
+    </script>
+  </body>
+</html>
